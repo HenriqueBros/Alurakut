@@ -20,6 +20,28 @@ function ProfileSidebar(propriedades) {
   )
 }
 
+function ProfileRelationsBox(propriedades) {
+  return(
+    <ProfileRelationsBoxWrapper>
+      <h2 className="smallTitle">
+        {propriedades.title} ({propriedades.items.length})
+      </h2>
+      <ul>
+         {/* {seguidores.map((itemAtual) => {
+            return (
+              <li key={itemAtual}>
+                <a href={`https://github.com/${itemAtual.title}.png`} key={itemAtual}>
+                  <img src={itemAtual.image}/>
+                  <span>{itemAtual}</span>
+                </a>
+              </li>
+            )
+          })} */}
+        </ul>
+      </ProfileRelationsBoxWrapper>
+  )
+}
+
 export default function Home() {
   const usuarioAleatorio = 'HenriqueBros';
   const [comunidades, setComunidades] = React.useState([{
@@ -36,6 +58,18 @@ export default function Home() {
     'omariosouto',
     'juunegreiros',
     ]
+
+    const [seguidores, setSeguidores] = React.useState([]);
+    // Pegar o array de dados do Github 
+  React.useEffect(function() {
+    fetch('https://api.github.com/users/HenriqueBros/followers')
+    .then(function(respostaServidor){
+     return respostaServidor.json();
+  })
+    .then(function(respostaCompleta) {
+    setSeguidores(respostaCompleta);
+  })
+  }, [])  
 
   return (
     <>
@@ -95,6 +129,8 @@ export default function Home() {
         </div>
 
         <div className="profileRelationsArea" style={{gridArea: 'profileRelationsArea'}}>
+          <ProfileRelationsBox title="seguidores" items={seguidores} />
+          
           <ProfileRelationsBoxWrapper>
           <ul>
               {comunidades.map((itemAtual) => {
@@ -109,6 +145,7 @@ export default function Home() {
               })}
             </ul>
           </ProfileRelationsBoxWrapper>
+
           <ProfileRelationsBoxWrapper>
             <h2 className="smallTitle">
               Pessoas da Comunidade ({pessoasFavoritas.length})
